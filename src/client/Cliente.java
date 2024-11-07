@@ -67,7 +67,7 @@ public class Cliente {
             out = new PrintWriter(socket.getOutputStream(), true);
 
             // Enviar el nombre de usuario al servidor al conectarse
-            out.println("Usuario " + nombreUsuario + " Esta conectado");
+            out.println(nombreUsuario);
 
             new Thread(() -> {
                 try {

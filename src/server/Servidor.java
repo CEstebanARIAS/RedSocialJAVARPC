@@ -38,6 +38,8 @@ public class Servidor {
         private Socket socket;
         private PrintWriter out;
         private BufferedReader in;
+        private String nombreCliente;  
+        
 
         public ClienteHandler(Socket socket) {
             this.socket = socket;
@@ -47,6 +49,9 @@ public class Servidor {
             try {
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 out = new PrintWriter(socket.getOutputStream(), true);
+
+                nombreCliente = in.readLine();
+
                 synchronized (escritores) {
                     escritores.add(out);
                 }
@@ -64,18 +69,18 @@ public class Servidor {
                     }
                 }
             } catch (IOException e) {
-                System.out.println("No se pudo procesar la solicitud del cliente:" + e.getMessage());
+                System.out.println("Se perdio la conexion con el cliente: " + nombreCliente);
             } finally {
                 try {
                     socket.close();
-                    System.out.println("Socket Cerrado");
+                    System.out.println("Socket de cliente " + nombreCliente + " Cerrado");
                 } catch (IOException e) {
 
                     System.out.println("No se pudo cerrar el socket" + e.getMessage());
                 }
                 synchronized (escritores) {
                     escritores.remove(out);
-                    System.out.println("Cliente desconectao");
+                    System.out.println("Cliente Eliminado: ");
                 }
             }
         }
@@ -92,7 +97,6 @@ public class Servidor {
                 // Notificar a todos los clientes sobre el archivo recibido
                 enviarATodos("Archivo en servidor: " + nombreArchivo); // Solo enviar el nombre del archivo
             } catch (IOException e) {
-                
                 System.out.println("No se pudo recibir el archivo"+ e.getMessage());
             }
         }
@@ -112,7 +116,7 @@ public class Servidor {
 
                     // Enviar el archivo codificado al cliente
                     out.println("FILE:" + nombreArchivo + ":" + contenidoBase64);
-                    System.out.println("Archivo " + nombreArchivo + " enviado al cliente.");
+                    System.out.println("Archivo " + nombreArchivo + " enviado al cliente: " + nombreCliente);
                 } catch (IOException e) {
                     System.err.println("Error al leer o codificar el archivo: " + e.getMessage());
                 }
