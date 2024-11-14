@@ -26,8 +26,9 @@ public class Servidor {
         System.out.println("Servidor escuchando en el puerto " + PUERTO);
         try (ServerSocket serverSocket = new ServerSocket(PUERTO)) {
             while (true) {
-                new ClienteHandler(serverSocket.accept()).start();
-                System.out.println("cliente nuevo conectado");
+                Socket clienteSocket = serverSocket.accept();
+                System.out.println("Cliente conectado desde IP: " + clienteSocket.getInetAddress().getHostAddress());
+                new ClienteHandler(clienteSocket).start();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -39,6 +40,7 @@ public class Servidor {
         private PrintWriter out;
         private BufferedReader in;
         private String nombreCliente;  
+        private String notificacion;
         
 
         public ClienteHandler(Socket socket) {
@@ -81,6 +83,8 @@ public class Servidor {
                 synchronized (escritores) {
                     escritores.remove(out);
                     System.out.println("Cliente Eliminado: ");
+                    notificacion = "El usuario "+ nombreCliente + " se desconecto";
+                    enviarATodos(notificacion);
                 }
             }
         }
