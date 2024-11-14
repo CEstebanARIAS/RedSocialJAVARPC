@@ -66,6 +66,7 @@ public class Cliente {
             out.println(nombreUsuario + ": " + mensaje);
         }
     }
+    
 
     private void enviarArchivo() {
         JFileChooser fileChooser = new JFileChooser();
