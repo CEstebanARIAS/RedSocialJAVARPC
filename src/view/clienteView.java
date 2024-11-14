@@ -27,6 +27,8 @@ public class clienteView {
         botonEnviarMensaje = new JButton("Enviar Mensaje");
         botonEnviarArchivo = new JButton("Enviar Archivo");
         botonSolicitarArchivo = new JButton("Solicitar Archivo");
+        Color color = new Color(0);
+        botonEnviarMensaje.setBackground(color.GREEN);
 
         JPanel panelInferior = new JPanel(new BorderLayout());
         panelInferior.add(campoMensaje, BorderLayout.CENTER);
