@@ -3,6 +3,9 @@ package client;
 import utils.FileUtils;
 import java.io.*;
 import java.net.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.swing.JFileChooser;
 import view.clienteView;
 
@@ -90,17 +93,27 @@ public class Cliente {
     }
 
     private void manejarArchivoRecibido(String mensaje) {
+        String rutaCliente = System.getProperty("user.home") + File.separator + "Desktop" + File.separator + "archivos_recibidos";
+        Path path = Paths.get(rutaCliente);
+        if (!Files.exists(path)) {
+            try {
+                Files.createDirectory(path);
+                System.out.println("Directorio 'recibidos' creado en: " + path.toString());
+            } catch (IOException e) {
+                System.err.println("Error al crear el directorio 'recibidos': " + e.getMessage());
+            }
+        }
         try {
             String[] partes = mensaje.split(":", 3);
             String nombreArchivo = partes[1];
             String contenidoBase64 = partes[2];
-            String rutaCliente = System.getProperty("user.home") + File.separator + "Desktop" + File.separator + "archivos_recibidos";
+            
 
             FileUtils.decodeBase64ToFile(contenidoBase64, rutaCliente + File.separator + nombreArchivo);
             vista.mostrarMensaje("Archivo recibido y guardado en: " + rutaCliente + File.separator + nombreArchivo);
         } catch (IOException e) {
             vista.mostrarMensaje("Error al guardar el archivo recibido.");
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
